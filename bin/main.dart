@@ -1,3 +1,5 @@
+import 'dart:io';
+
 main(List<String> args) {
   final List<String> ALPHABET = [
     "a",	"b",	"c",	"d",	"e",	"f",	"g",	"h",	"i",	"j",	"k",	"l",	"m",	"n",	"o",	"p",	"q",	"r",	"s",	"t",	"u",	"v",	"w",	"x",	"y",	"z",
@@ -6,5 +8,48 @@ main(List<String> args) {
     "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я",
     "1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"0", " ", "!",	""",	"#",	"\$",	"%",	"&",	""",	"(",	")",	"*",	"+",	",",	"-",	".",	"/",	":",	";",
     "<",	"=",	">",	"?",	"@",	"[",	"\\",	"]",	"^",	"_",	"`",	"{",	"|",	"}",	"~"];
-  
+
+  final Map<String, String> CODE = generateCodeMap(ALPHABET);
+
+  print("Enter your message:");
+  String userMessage = stdin.readLineSync();
+  print("");
+  print("Your code message is:");
+  print("${generateCodedMessage(CODE, userMessage)}");
+}
+
+Map<String, String> generateCodeMap (List<String> sourceList) {
+  int phase = sourceList.length ~/ 2;
+  Map<String, String> outputMap = {};
+
+  for (int i = 0; i < sourceList.length; i++) {
+    if (i < phase) {
+      outputMap[sourceList[i]] = sourceList[i + phase];
+    }
+    else {
+      outputMap[sourceList[i]] = sourceList[i - phase];
+    }
+  }
+  return outputMap;
+}
+
+String generateCodedMessage (Map<String, String> code, String message) {
+  List<String> messageList = message.split("");
+  List<String> codedMessageList = [];
+
+  for(int i = 0; i < messageList.length; i++) {
+    codedMessageList.add(code[messageList[i]]);
+  }
+  return codedMessageList.join("");
+}
+
+String decodeCodedMessage (Map<String, String> code, String codedMessage) {
+  List<String> coddedMessageList = codedMessage.split("");
+  List<String> originalMessage = [];
+  Map<String, String> decode = {};
+
+  for (var s in code) {
+    decode
+  }
+
 }
