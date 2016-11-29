@@ -6,7 +6,7 @@ main(List<String> args) {
     "A",	"B",	"C",	"D",	"E",	"F",	"G",	"H",	"I",	"J",	"K",	"L",	"M",	"N",	"O",	"P",	"Q",	"R",	"S",	"T",	"U",	"V",	"W",	"X",	"Y",	"Z",
     "а", "б", "в", "г", "д", "е", "ё", "ж", "з", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ъ", "ы", "ь", "э", "ю", "я",
     "А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "Й", "К", "Л", "М", "Н", "О", "П", "Р", "С", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Ъ", "Ы", "Ь", "Э", "Ю", "Я",
-    "1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"0", " ", "!",	""",	"#",	"\$",	"%",	"&",	""",	"(",	")",	"*",	"+",	",",	"-",	".",	"/",	":",	";",
+    "1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"0", " ", "!",	"\"",	"#",	"\$",	"%",	"&",	"(",	")",	"*",	"+",	",",	"-",	".",	"/",	":",	";",
     "<",	"=",	">",	"?",	"@",	"[",	"\\",	"]",	"^",	"_",	"`",	"{",	"|",	"}",	"~"];
 
   final Map<String, String> CODE = generateCodeMap(ALPHABET);
@@ -16,6 +16,12 @@ main(List<String> args) {
   print("");
   print("Your code message is:");
   print("${generateCodedMessage(CODE, userMessage)}");
+  print("");
+  print("Enter coded message:");
+  String codedMessage = stdin.readLineSync();
+  print("");
+  print("Original message was:");
+  print("${decodeCodedMessage(CODE, codedMessage)}");
 }
 
 Map<String, String> generateCodeMap (List<String> sourceList) {
@@ -40,16 +46,24 @@ String generateCodedMessage (Map<String, String> code, String message) {
   for(int i = 0; i < messageList.length; i++) {
     codedMessageList.add(code[messageList[i]]);
   }
-  return codedMessageList.join("");
+  String codedMessage = codedMessageList.join("");
+  return codedMessage;
 }
 
 String decodeCodedMessage (Map<String, String> code, String codedMessage) {
-  List<String> coddedMessageList = codedMessage.split("");
-  List<String> originalMessage = [];
+  List<String> codedMessageList = codedMessage.split("");
+  List<String> originalMessageList = [];
   Map<String, String> decode = {};
 
-  for (var s in code) {
-    decode
+  void reverseMap(key, value) {
+    code[key] = value;
+    decode[value] = key;
   }
+  code.forEach(reverseMap);
 
+  for(int i = 0; i < codedMessageList.length; i++) {
+    originalMessageList.add(decode[codedMessageList[i]]);
+  }
+  String originalMessage =originalMessageList.join("");
+  return originalMessage;
 }
