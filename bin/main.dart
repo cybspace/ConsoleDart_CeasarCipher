@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 main(List<String> args) {
   final List<String> ALPHABET = [
@@ -18,10 +19,17 @@ main(List<String> args) {
   while (phase == null) {
     print("Enter prefered phase:");
     userPhase = stdin.readLineSync();
-    try {
-      phase = int.parse(userPhase);
-    } on FormatException {
-      print("Wrong number!");
+
+    if (['r', 'rand', 'random'].contains(userPhase.toLowerCase())) {
+      Random rand = new Random();
+      phase = rand.nextInt(ALPHABET.length);
+    }
+    else {
+      try {
+        phase = int.parse(userPhase);
+      } on FormatException {
+        print("Wrong number!");
+      }
     }
   }
 
