@@ -24,46 +24,31 @@ main(List<String> args) {
   print("${decodeCodedMessage(CODE, codedMessage)}");
 }
 
-Map<String, String> generateCodeMap (List<String> sourceList) {
-  int phase = sourceList.length ~/ 2;
-  Map<String, String> outputMap = {};
+Lis<Map<String, String>> generateCodeAndDecodeMaps (List<String> source, int phase) {
+  Map<String, String> codeMap = {},
+      decodeMap = {};
+  int sourceLength = source.length;
+  if (phase == sourceLength) {
+    phase = 0;
+  }
+  else if (phase > sourceLength) {
+    phase = phase - (sourceLength * (phase ~/ sourceLength));
+  }
 
-  for (int i = 0; i < sourceList.length; i++) {
-    if (i < phase) {
-      outputMap[sourceList[i]] = sourceList[i + phase];
+  for (int i = 0; i < sourceLength; i++) {
+    if ((i + phase) > (sourceLength - 1)) {
+      int lag = (i + phase) - (sourceLength - 1);
+      codeMap[source[i]] = source[i - lag];
     }
     else {
-      outputMap[sourceList[i]] = sourceList[i - phase];
+      codeMap[source[i]] = source[i + phase];
     }
   }
-  return outputMap;
-}
 
-String generateCodedMessage (Map<String, String> code, String message) {
-  List<String> messageList = message.split("");
-  List<String> codedMessageList = [];
-
-  for(int i = 0; i < messageList.length; i++) {
-    codedMessageList.add(code[messageList[i]]);
+  void reverseMap(Key, Value) {
+    codeMap[Key] = Value;
+    decodeMap[Value] = Key;
   }
-  String codedMessage = codedMessageList.join("");
-  return codedMessage;
-}
+  codeMap.forEach(key, value).reverseMap();
 
-String decodeCodedMessage (Map<String, String> code, String codedMessage) {
-  List<String> codedMessageList = codedMessage.split("");
-  List<String> originalMessageList = [];
-  Map<String, String> decode = {};
-
-  void reverseMap(key, value) {
-    code[key] = value;
-    decode[value] = key;
-  }
-  code.forEach(reverseMap);
-
-  for(int i = 0; i < codedMessageList.length; i++) {
-    originalMessageList.add(decode[codedMessageList[i]]);
-  }
-  String originalMessage =originalMessageList.join("");
-  return originalMessage;
 }
