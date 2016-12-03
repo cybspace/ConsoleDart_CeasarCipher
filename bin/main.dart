@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 main(List<String> args) {
   final List<String> ALPHABET = [
@@ -9,61 +10,89 @@ main(List<String> args) {
     "1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"0", " ", "!",	"\"",	"#",	"\$",	"%",	"&",	"(",	")",	"*",	"+",	",",	"-",	".",	"/",	":",	";",
     "<",	"=",	">",	"?",	"@",	"[",	"\\",	"]",	"^",	"_",	"`",	"{",	"|",	"}",	"~"];
 
-  final Map<String, String> CODE = generateCodeMap(ALPHABET);
+  String userMessage, userPhase;
+  int phase;
 
   print("Enter your message:");
-  String userMessage = stdin.readLineSync();
+  userMessage = stdin.readLineSync();
   print("");
-  print("Your code message is:");
-  print("${generateCodedMessage(CODE, userMessage)}");
-  print("");
-  print("Enter coded message:");
-  String codedMessage = stdin.readLineSync();
-  print("");
-  print("Original message was:");
-  print("${decodeCodedMessage(CODE, codedMessage)}");
-}
+  while (phase == null) {
+    print("Enter prefered phase:");
+    userPhase = stdin.readLineSync();
 
-Map<String, String> generateCodeMap (List<String> sourceList) {
-  int phase = sourceList.length ~/ 2;
-  Map<String, String> outputMap = {};
-
-  for (int i = 0; i < sourceList.length; i++) {
-    if (i < phase) {
-      outputMap[sourceList[i]] = sourceList[i + phase];
+    if (['r', 'rand', 'random'].contains(userPhase.toLowerCase())) {
+      Random rand = new Random();
+      phase = rand.nextInt(ALPHABET.length);
     }
     else {
-      outputMap[sourceList[i]] = sourceList[i - phase];
+      try {
+        phase = int.parse(userPhase);
+      } on FormatException {
+        print("Wrong number!");
+      }
     }
   }
-  return outputMap;
+
+  Map<String, String> codeMap = generateCodeMap(ALPHABET, phase);
+
+  print("");
+  print("Your code message is:");
+  print("${generateCodedOrDecodedMessage(codeMap, userMessage)}");
+  print("");
+  print("Enter coded message:");
+  userMessage = stdin.readLineSync();
+  print("");
+  print("Original message was:");
+  print("${generateCodedOrDecodedMessage(codeMap, userMessage, decode: true)}");
 }
 
-String generateCodedMessage (Map<String, String> code, String message) {
-  List<String> messageList = message.split("");
-  List<String> codedMessageList = [];
-
-  for(int i = 0; i < messageList.length; i++) {
-    codedMessageList.add(code[messageList[i]]);
+Map<String, String> generateCodeMap (List<String> source, int phase) {
+  Map<String, String> codeMap = {};
+  int sourceLength = source.length;
+  if (phase == sourceLength) {
+    phase = 0;
   }
-  String codedMessage = codedMessageList.join("");
-  return codedMessage;
+  else if (phase > sourceLength) {
+    phase = phase - (sourceLength * (phase ~/ sourceLength));
+  }
+
+  for (int i = 0; i < sourceLength; i++) {
+    if ((i + phase) > (sourceLength - 1)) {
+      int lag = sourceLength - phase;
+      codeMap[source[i]] = source[i - lag];
+    }
+    else {
+      codeMap[source[i]] = source[i + phase];
+    }
+  }
+
+  return codeMap;
 }
 
-String decodeCodedMessage (Map<String, String> code, String codedMessage) {
-  List<String> codedMessageList = codedMessage.split("");
-  List<String> originalMessageList = [];
-  Map<String, String> decode = {};
+String generateCodedOrDecodedMessage (Map<String, String> codeMap, String userMessage, {bool decode: false}) {
+  Map<String, String> usefulMap = {};
+  List<String> userMessageList = userMessage.split(""), returnMessageList = [];
+  String returnMessage;
 
-  void reverseMap(key, value) {
-    code[key] = value;
-    decode[value] = key;
+  if (!decode) {
+    usefulMap = codeMap;
   }
-  code.forEach(reverseMap);
+  else {
+    Map<String, String> decodeMap = {};
+    void reverseMap (key, value) {
+      codeMap[key] = value;
+      decodeMap[value] = key;
+    }
+    codeMap.forEach(reverseMap);
 
-  for(int i = 0; i < codedMessageList.length; i++) {
-    originalMessageList.add(decode[codedMessageList[i]]);
+    usefulMap = decodeMap;
   }
-  String originalMessage =originalMessageList.join("");
-  return originalMessage;
+
+  for (int i = 0; i < userMessageList.length; i++) {
+    returnMessageList.add(usefulMap[userMessageList[i]]);
+  }
+
+  returnMessage = returnMessageList.join("");
+  return returnMessage;
 }
+
