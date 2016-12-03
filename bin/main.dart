@@ -9,24 +9,37 @@ main(List<String> args) {
     "1",	"2",	"3",	"4",	"5",	"6",	"7",	"8",	"9",	"0", " ", "!",	"\"",	"#",	"\$",	"%",	"&",	"(",	")",	"*",	"+",	",",	"-",	".",	"/",	":",	";",
     "<",	"=",	">",	"?",	"@",	"[",	"\\",	"]",	"^",	"_",	"`",	"{",	"|",	"}",	"~"];
 
-  final Map<String, String> CODE = generateCodeMap(ALPHABET);
+  String userMessage, userPhase;
+  int phase;
 
   print("Enter your message:");
-  String userMessage = stdin.readLineSync();
+  userMessage = stdin.readLineSync();
+  print("");
+  while (phase == null) {
+    print("Enter prefered phase:");
+    userPhase = stdin.readLineSync();
+    try {
+      phase = int.parse(userPhase);
+    } on FormatException {
+      print("Wrong number!");
+    }
+  }
+
+  Map<String, String> codeMap = generateCodeMap(ALPHABET, phase);
+
   print("");
   print("Your code message is:");
-  print("${generateCodedMessage(CODE, userMessage)}");
+  print("${generateCodedOrDecodedMessage(codeMap, userMessage)}");
   print("");
   print("Enter coded message:");
-  String codedMessage = stdin.readLineSync();
+  userMessage = stdin.readLineSync();
   print("");
   print("Original message was:");
-  print("${decodeCodedMessage(CODE, codedMessage)}");
+  print("${generateCodedOrDecodedMessage(codeMap, userMessage, decode: true)}");
 }
 
-Lis<Map<String, String>> generateCodeAndDecodeMaps (List<String> source, int phase) {
-  Map<String, String> codeMap = {},
-      decodeMap = {};
+Map<String, String> generateCodeMap (List<String> source, int phase) {
+  Map<String, String> codeMap = {};
   int sourceLength = source.length;
   if (phase == sourceLength) {
     phase = 0;
@@ -37,7 +50,7 @@ Lis<Map<String, String>> generateCodeAndDecodeMaps (List<String> source, int pha
 
   for (int i = 0; i < sourceLength; i++) {
     if ((i + phase) > (sourceLength - 1)) {
-      int lag = (i + phase) - (sourceLength - 1);
+      int lag = sourceLength - phase;
       codeMap[source[i]] = source[i - lag];
     }
     else {
@@ -45,10 +58,33 @@ Lis<Map<String, String>> generateCodeAndDecodeMaps (List<String> source, int pha
     }
   }
 
-  void reverseMap(Key, Value) {
-    codeMap[Key] = Value;
-    decodeMap[Value] = Key;
-  }
-  codeMap.forEach(key, value).reverseMap();
-
+  return codeMap;
 }
+
+String generateCodedOrDecodedMessage (Map<String, String> codeMap, String userMessage, {bool decode: false}) {
+  Map<String, String> usefulMap = {};
+  List<String> userMessageList = userMessage.split(""), returnMessageList = [];
+  String returnMessage;
+
+  if (!decode) {
+    usefulMap = codeMap;
+  }
+  else {
+    Map<String, String> decodeMap = {};
+    void reverseMap (key, value) {
+      codeMap[key] = value;
+      decodeMap[value] = key;
+    }
+    codeMap.forEach(reverseMap);
+
+    usefulMap = decodeMap;
+  }
+
+  for (int i = 0; i < userMessageList.length; i++) {
+    returnMessageList.add(usefulMap[userMessageList[i]]);
+  }
+
+  returnMessage = returnMessageList.join("");
+  return returnMessage;
+}
+
