@@ -279,7 +279,7 @@ Map<String, String> generateCodeMap (List<String> source, int phase) {
   return codeMap;
 }
 
-///преобразую входящее сообщение в шифрованное или дешифрованное в зависимости от модулятора decode
+///преобразую входящее сообщение в шифрованное или дешифрованное, используя сдвиг
 String generateCodedOrDecodedMessageUsingPhase (List<String> alphabet, int phase, String userMessage, {bool decode: false}) {
   Map<String, String> codeMap = {}, usefulMap = {};
   List<String> userMessageList = userMessage.split(""), returnMessageList = [];
@@ -309,6 +309,7 @@ String generateCodedOrDecodedMessageUsingPhase (List<String> alphabet, int phase
   return returnMessage;
 }
 
+///реобразую входящее сообщение в шифрованное или дешифрованное, используя ключевую фразу
 String generateCodedOrDecodedMessageUsingKeyphrase (List<String> alphabet, String keyphrase, String userMessage, {bool decode: false}) {
   List<String> keyphraseList = keyphrase.split(""), userMessageList = userMessage.split(""), returnMessageList = [];
   List<int> keyphraseIndexList = [];
