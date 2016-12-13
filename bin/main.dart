@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -16,13 +17,13 @@ main(List<String> args) {
   int phase;
 
   print("Enter your message:");
-  userMessage = stdin.readLineSync();
+  userMessage = stdin.readLineSync(encoding: UTF8);
   print("");
 
   while (cipherMode == null) {
     print(
         "How would you like to code your message: with (P)hase or (K)eyphrase?");
-    cipherMode = stdin.readLineSync();
+    cipherMode = stdin.readLineSync(encoding: UTF8);
 
     if (!(['p', 'phase', 'k', 'keyphrase'].contains(
         cipherMode.toLowerCase()))) {
@@ -37,7 +38,7 @@ main(List<String> args) {
   if (['p', 'phase'].contains(cipherMode)) {
     while (phase == null) {
       print("Enter prefered phase:");
-      userPhase = stdin.readLineSync();
+      userPhase = stdin.readLineSync(encoding: UTF8);
 
       if (['r', 'rand', 'random'].contains(userPhase.toLowerCase())) {
         Random rand = new Random();
@@ -56,7 +57,7 @@ main(List<String> args) {
     print("${generateCodedOrDecodedMessageUsingPhase(ALPHABET, phase, userMessage)}");
     print("");
     print("Enter coded message:");
-    userMessage = stdin.readLineSync();
+    userMessage = stdin.readLineSync(encoding: UTF8);
     print("");
     print("Original message was:");
     print("${generateCodedOrDecodedMessageUsingPhase(
@@ -65,7 +66,7 @@ main(List<String> args) {
   else {
     while (keyPhrase == null) {
       print("Enter prefered keyphrase:");
-      keyPhrase = stdin.readLineSync();
+      keyPhrase = stdin.readLineSync(encoding: UTF8);
       List keyPhraseList = keyPhrase.split("");
       if (keyPhraseList.length > userMessage.length) {
         keyPhrase = null;
@@ -78,12 +79,12 @@ main(List<String> args) {
         ALPHABET, keyPhrase, userMessage)}");
     print("");
     print("Enter coded message:");
-    userMessage = stdin.readLineSync();
+    userMessage = stdin.readLineSync(encoding: UTF8);
     keyPhrase = null;
     print("");
     while (keyPhrase == null) {
       print("Enter keyphrase for encode:");
-      keyPhrase = stdin.readLineSync();
+      keyPhrase = stdin.readLineSync(encoding: UTF8);
       List keyPhraseList = keyPhrase.split("");
       if (keyPhraseList.length > userMessage.length) {
         keyPhrase = null;
