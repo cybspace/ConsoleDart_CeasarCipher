@@ -3,5 +3,5 @@ import 'dart:io';
 
 void main () {
   String userMessage = '';
-  userMessage = stdin.readLineSync(encoding: UTF8);
+  userMessage = stdin.readLineSync();
 }
